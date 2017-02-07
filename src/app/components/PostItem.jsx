@@ -6,9 +6,23 @@ import CommentList from './CommentList';
 @autobind
 class PostItem extends React.Component {
 
-    loadComments(event) {
+    onMouseUp() {
+        clearTimeout(this.timeout);
+        this.loadComments();
+    }
+
+    onMouseLeave() {
+        clearTimeout(this.timeout);
+    }
+
+    onMouseEnter() {
+        this.timeout = setTimeout(() => {
+            this.loadComments();
+        }, 1000);
+    }
+
+    loadComments() {
         this.props.getComments(this.props.post.id, this.props.post.comments.length);
-        event.preventDefault();
     }
 
     render() {
@@ -19,7 +33,13 @@ class PostItem extends React.Component {
                         <Link to={`user/${this.props.post.id}`}>
                             <div className="glyphicon glyphicon glyphicon-globe" style={{ marginRight: '10px' }} />
                         </Link>
-                        <a className="delayed-hover" onClick={this.loadComments} href>
+                        <a
+                          onMouseEnter={this.onMouseEnter}
+                          onMouseLeave={this.onMouseLeave}
+                          onMouseUp={this.onMouseUp}
+                          onClick={(event) => { event.preventDefault(); }}
+                          href
+                        >
                             {this.props.post.title}
                         </a>
                     </h3>
